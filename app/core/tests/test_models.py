@@ -1,17 +1,17 @@
-'''
-Test for models
-'''
+"""Tests for models."""
+from decimal import Decimal
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from decimal import Decimal
 
 from core import models
 
+
 class ModelTest(TestCase):
-    '''Test Models'''
+    """Test Models."""
 
     def test_create_user_with_email_successful(self):
-        '''Test createing a user with an email successfill!!'''
+        """Test creating a user with an email is successful."""
         email = 'test@example.com'
         password = 'testpass@123'
         user = get_user_model().objects.create_user(
@@ -19,38 +19,38 @@ class ModelTest(TestCase):
             password=password,
         )
 
-        self.assertEqual(user.email,email)
+        self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
 
-    def test_new_user_user_normalized(self):
-        '''Test email is normalized for new users'''
-        sample_emails=[
-            ['test1@EXAMPLE.COM','test1@example.com'],
-            ['Test2@Example.com','Test2@example.com'],
-            ['TEST3@EXAMPLE.COM','TEST3@example.com'],
-            ['test4@example.COM','test4@example.com'],
+    def test_new_user_email_normalized(self):
+        """Test email is normalized for new users."""
+        sample_emails = [
+            ['test1@EXAMPLE.COM', 'test1@example.com'],
+            ['Test2@Example.com', 'Test2@example.com'],
+            ['TEST3@EXAMPLE.COM', 'TEST3@example.com'],
+            ['test4@example.COM', 'test4@example.com'],
         ]
-        for email, excepted in sample_emails:
+        for email, expected in sample_emails:
             user = get_user_model().objects.create_user(email, 'sample123')
-            self.assertEqual(user.email, excepted)
-    
-    def test_new_user_without_email_raise_error(self):
-        '''Test that create a user without an email raise a value error'''
+            self.assertEqual(user.email, expected)
+
+    def test_new_user_without_email_raises_error(self):
+        """Test creating a user without an email raises a ValueError."""
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user('','test123')
+            get_user_model().objects.create_user('', 'test123')
 
     def test_create_superuser(self):
-        '''Test Creating a superuser'''
+        """Test creating a superuser."""
         user = get_user_model().objects.create_superuser(
-            'tset@example.com',
-            'test123'
+            'test@example.com',
+            'test123',
         )
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
     def test_create_recipe(self):
-        '''Test creating recipe successfull'''
+        """Test creating a recipe is successful."""
         user = get_user_model().objects.create_user(
             'test@example.com',
             'testpass123',
